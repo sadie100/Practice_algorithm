@@ -1,21 +1,14 @@
 const fs = require("fs");
-const input = fs
-  .readFileSync("test.txt")
-  .toString()
-  .trim()
-  .split(" ")
-  .map((d) => Number(d));
+const input = fs.readFileSync("test.txt").toString().trim().split("");
 
-const sangsoo = (num) => {
-  const numArr = num.toString().split("");
-  let ans = "";
-  for (let i = numArr.length - 1; i >= 0; i--) {
-    ans += numArr[i];
-  }
-  return Number(ans);
-};
+const arr = [
+  2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 9,
+];
 
-const one = sangsoo(input[0]);
-const two = sangsoo(input[1]);
-if (one > two) console.log(one);
-else console.log(two);
+const a_idx = "A".charCodeAt(0);
+
+console.log(
+  input.reduce((acc, cur) => {
+    return (acc += arr[cur.charCodeAt(0) - a_idx] - 1 + 2);
+  }, 0)
+);
