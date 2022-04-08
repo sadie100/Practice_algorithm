@@ -1,14 +1,10 @@
 const fs = require("fs");
-const input = fs.readFileSync("test.txt").toString().trim().split("");
+let input = fs.readFileSync("test.txt").toString().trim();
 
-const arr = [
-  2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 9,
-];
+const chroa = [/c=/g, /c-/g, /dz=/g, /d-/g, /lj/g, /nj/g, /s=/g, /z=/g];
 
-const a_idx = "A".charCodeAt(0);
+chroa.forEach((char) => {
+  input = input.replaceAll(char, 1);
+});
 
-console.log(
-  input.reduce((acc, cur) => {
-    return (acc += arr[cur.charCodeAt(0) - a_idx] - 1 + 2);
-  }, 0)
-);
+console.log(input.length);
