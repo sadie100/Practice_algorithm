@@ -10,17 +10,19 @@ height를 minHeight부터 maxHeight로 돌리면서, 물에 잠겼는지의 여�
     하나의 탐사가 끝나면 visited 0인 곳을 찾아서 dfs 돌린다
 '''
 import sys
-sys.setrecursionlimit(10**7)
+sys.setrecursionlimit(100000)
 
 num = int(sys.stdin.readline())
 
 maxCount = 0
 region = [[] for i in range(num)]
 maxHeight = -1
+minHeight = 101
 
 for i in range(num):
     line = list(map(int, sys.stdin.readline().split()))
     maxHeight = max(maxHeight, max(line))
+    minHeight = min(minHeight, min(line))
     region[i]=line
 
 
@@ -41,7 +43,10 @@ def dfs(row, col, visited, std):
             visited[row+dx[i]][col+dy[i]] = 1
     return
 
-for height in range(maxHeight):
+for height in range(minHeight, maxHeight):
+    if(minHeight == maxHeight):
+        maxCount = max(maxCount,1)
+        continue
     visited = [[0 for i in range(num)] for i in range(num)]
     count=0
     for i in range(num):
@@ -54,4 +59,4 @@ for height in range(maxHeight):
                     visited[i][j] = 1
     maxCount = max(maxCount,count)
 
-print(maxCount)
+print(1 if maxCount==0 else maxCount)
