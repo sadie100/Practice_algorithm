@@ -14,9 +14,8 @@ ex: [1,2,4,5]이면 (0,1), (1,2), (2,4), (3,5)에 퀸이 있는 그런 느낌으
 function solution(n) {
   let count = 0;
 
-  const putQueen = (col, row, board) => {
-    //어느 col, row에 queen을 뒀을 때
-    board[col] = row;
+  const putQueen = (row, col, board) => {
+    //어느 row, col에 queen을 뒀을 때
     if (row === n - 1) {
       //체스판의 끝에 온 경우
       count += 1;
@@ -26,16 +25,23 @@ function solution(n) {
     for (let i = 0; i < n; i++) {
       //다음 row에 col를 늘려가면서 퀸 배치
       //이때 가능한 board에만 퀸 배치하도록 검사
-      if (board[i] !== undefined) continue;
       let flag = true;
-      for (let j = 0; j < n; j++) {
-        if (Math.abs(i - j) === Math.abs(row + 1 - j)) {
+      for (let j = 0; j <= row; j++) {
+        //이미 채워진 col이면 break
+        if (board[j] === i) {
+          flag = false;
+          break;
+        }
+
+        //대각선 검사에서 탈락하면 break
+        if (Math.abs(row + 1 - j) === Math.abs(i - board[j])) {
           flag = false;
           break;
         }
       }
       if (flag) {
-        putQueen(i, row + 1, [...board]);
+        board[row + 1] = i;
+        putQueen(row + 1, i, board);
       }
     }
   };
@@ -43,7 +49,8 @@ function solution(n) {
   for (let i = 0; i < n; i++) {
     //첫번째 줄에 퀸 배치
     const defaultBoard = new Array(n);
-    putQueen(i, 0, defaultBoard);
+    defaultBoard[0] = i;
+    putQueen(0, i, defaultBoard);
   }
   return count;
 }
