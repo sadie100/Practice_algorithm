@@ -1,23 +1,39 @@
-from sys import stdin
-input = stdin.readline
+# 6549번 히스토그램에서 가장 큰 직사각형
+from collections import deque
+import sys
 
-T = int(input())
-answer = ""
-result = [False, False, True] + [True, False] * 5000
-for number in range(3, 101, 2):
-    if result[number]:
-        result[number*2::number] = [False] * len(result[number*2::number])
+while True:
+    rec = list(map(int, sys.stdin.readline().split()))
+    n = rec.pop(0)
 
-for tc in range(T):
-    N = int(input())
-    if N == 4:
-        answer += "2 2\n"
-        continue
-    harf_N = N//2
-    if not harf_N % 2:
-        harf_N += 1
-    for i in range(harf_N, N, 2):
-        if result[i] and result[N-i]:
-            answer += "{} {}".format(N - i, i) + "\n"
-            break
-print(answer, end="")
+    if n == 0:
+        break
+
+    stack = deque()
+    answer = 0
+
+    # 왼쪽부터 차례대로 탐색
+    for i in range(n):
+        print(stack)
+        while len(stack) != 0 and rec[stack[-1]] > rec[i]:
+            tmp = stack.pop()
+
+            if len(stack) == 0:
+                width = i
+            else:
+                width = i - stack[-1] - 1
+            print(i, rec[i])    
+            answer = max(answer, width * rec[tmp])
+        stack.append(i)
+
+    # 스택에 남아있는 것을 처리
+    while len(stack) != 0:
+        tmp = stack.pop()
+
+        if len(stack) == 0:
+            width = n
+        else:
+            width = n - stack[-1] - 1
+        answer = max(answer, width * rec[tmp])
+
+    print(answer)
