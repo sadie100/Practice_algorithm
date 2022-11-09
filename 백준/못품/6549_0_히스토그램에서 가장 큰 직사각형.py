@@ -13,29 +13,27 @@ while(True):
     if(income=='0'): break
 
     num, *heights = map(int, income.split())
-    heights.insert(0,0)
+    heights.append(0)
     gramList = []
     maximum = 0
-    for idx, i in enumerate(heights):
+    for idx, height in enumerate(heights):
         if len(gramList)==0:
-            gramList.append((idx,i))
+            gramList.append((idx,height))
             continue
-        if i>=gramList[-1][1]:
-            # 높이가 높아지는 순간. 그냥 append한다
-            gramList.append((idx,i))
-        elif i<gramList[-1][1]:
+        if height>=gramList[-1][1]:
+            # 높이가 같거나 높아지는 순간. 그냥 append한다
+            gramList.append((idx,height))
+        elif height<gramList[-1][1]:
+            index = idx
             # 높이가 낮아지는 순간. 이 때 만들어지는 너비들을 maximum과 비교해서 크면 넣는다
-            while len(gramList)>0 and gramList[-1][1]>=i:
-                width, height = gramList.pop()
-                while len(gramList)>0 and gramList[-1][1]==height:
-                    width, height = gramList.pop()
-                maximum = max(maximum, (idx-1-width) * (height), (idx-width)*height)
-            gramList.append((idx, i))
+            while gramList and height<gramList[-1][1]:
+                startWidth, startHeight = gramList.pop()
+                while gramList and gramList[-1][1]==startHeight:
+                    startWidth = gramList.pop()[0]
+                maximum = max(maximum, (index-startWidth) * (startHeight))
+                if gramList and height<gramList[-1][1] and startHeight<gramList[-1][1]:
+                    index = startWidth
+            gramList.append((idx, height))
 
-    # 마지막 옴
-    idx = len(heights)
-    while len(gramList)>0:
-        width, height = gramList.pop()
-        maximum = max(maximum, (idx-width) * (height))
    
     print(maximum)
