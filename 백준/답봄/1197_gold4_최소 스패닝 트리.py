@@ -1,3 +1,7 @@
+'''
+프림
+'''
+
 import heapq
 
 v, e = map(int,input().split())
