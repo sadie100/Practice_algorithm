@@ -4,7 +4,6 @@
 시작점 끝점 제외하곤 실외여야 함
 연결하는 노드 수는 자유
 
-노드마다 visited를 만들고 dfs 비슷한걸 돌리면서 길이 될 때마다 count +1한다
 '''
 
 import sys
@@ -27,8 +26,9 @@ for idx in range(n):
 
 for _ in range(1,n):
     node1, node2 = map(int, input().split())
-    graph[node1].append(node2)
-    graph[node2].append(node1)
+    minVal = min(node1, node2)
+    maxVal = max(node1, node2)
+    graph[minVal].append(maxVal)
 
 def dfs(node):
     global count
@@ -38,19 +38,13 @@ def dfs(node):
         # 실내임
         count+=1
         return
-    
-    visited[node] = True
 
     for next in graph[node]:
-        if not visited[next]:
-            dfs(next)
+        dfs(next)
     
-    visited[node] = False
 
 for i in inside:
     # 실내일 때만 시작
-    visited = [False]*(n+1)
-    visited[i] = True
     for next in graph[i]:
         dfs(next)
 
