@@ -8,12 +8,10 @@ count = 0
 for idx in range(n):
     coins[idx] = int(input())
 
-coins = [coin for coin in coins if coin<=k]
 coins.reverse()
 
 for coin in coins:
-    if k>=coin:
-        count += k//coin
-        k %= coin
+    count += k//coin
+    k %= coin
 
 print(count)
