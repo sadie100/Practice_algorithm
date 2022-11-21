@@ -4,9 +4,14 @@
 '''
 
 n, k = map(int, input().split())
+# n : 물품의 수, k : 버틸 수 있는 무게
 things = [] * n
+bag = [[] for _ in range(k)]
 
 for i in range(n):
     w, v = map(int, input().split())
     things[i] = (w,v)
 
+for x in range(n):
+    for y in range(k):
+        
