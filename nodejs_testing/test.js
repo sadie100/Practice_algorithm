@@ -1,23 +1,37 @@
 const fs = require("fs");
-const input = fs.readFileSync("test.txt").toString().split("\n");
+const [k, ...lectures] = fs
+  .readFileSync("test.txt")
+  .toString()
+  .trim()
+  .split("\n");
 
-const num = input.shift();
-let arr = input.map((d) => d.split(" ").map((a) => Number(a)));
-arr = arr.sort((a, b) => {
-  if (a[1] !== b[1]) {
-    return a[1] - b[1];
-  } else {
-    return a[0] - b[0];
+const lecList = lectures
+  .map((d) => {
+    return ([num, start, end] = d.split(" ").map(Number));
+  })
+  .sort((a, b) => a[1] - b[1]);
+
+const lectureNow = [];
+lectureRoom = [];
+
+lecList.map(([num, start, end]) => {
+  let flag = false;
+  if (lectureNow.length > 0) {
+    lectureNow.map((time, room) => {
+      if (!flag && start >= time) {
+        lectureNow[room] = end;
+        lectureRoom.push(room + 1);
+        flag = true;
+      }
+    });
+  }
+  if (!flag) {
+    lectureNow.push(end);
+    lectureRoom.push(lectureNow.length);
   }
 });
-console.log(arr);
-let result = 0,
-  recentEnd = 0;
-arr.forEach(([start, end], idx) => {
-  if (recentEnd > start) {
-    return;
-  }
-  result++;
-  recentEnd = end;
+
+console.log(lectureNow.length);
+lectureRoom.map((room) => {
+  console.log(room);
 });
-console.log(result);
