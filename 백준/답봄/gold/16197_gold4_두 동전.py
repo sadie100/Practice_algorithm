@@ -5,43 +5,45 @@
 - 네 칸 모두 #이면 리턴
 '''
 
+from collections import deque
+import sys
+
+input = sys.stdin.readline
+
 n,m = map(int, input().split())
 board = [[] for _ in range(n)]
 dx = [0,1,0,-1]
 dy = [1,0,-1,0]
-coins = []
 minCnt = -1
+coins = []
+# coins : [(row1, col1), (row2, col2), count]
+coinNow = deque([])
 
 for i in range(n):
     board[i] = list(input())
     for j in range(m):
         if board[i][j] == 'o':
             coins.append((i,j))
-            board[i][j] = 1
-        elif board[i][j] == '.':
-            board[i][j] = 0
-        elif board[i][j] == '#':
-            board[i][j] = -1
 
-def dfs(coinNow, cnt):
-    global minCnt
-    if cnt==10:
-        return
-    
+coins.append(0)
+
+coinNow.append(coins)
+
+while(coinNow):
+    coin1, coin2, cnt = coinNow.popleft()
     for i in range(4):
         newCoin = []
         dropping = 0
-        for row, col in coinNow:
-            board[row][col]-=1
+        for row, col in [coin1, coin2]:
             nr = row + dx[i]
             nc = col + dy[i]
             if nr<0 or nr>=n or nc<0 or nc>=m:
                 dropping += 1
-            elif board[nr][nc]<0:
+                continue
+            elif board[nr][nc]=="#":
                 nr = row
                 nc = col
-                newCoin.append((nr, nc))
-                board[nr][nc]+=1
+            newCoin.append((nr, nc))
         
         if dropping==1:
             # 하나만 떨어짐
@@ -49,13 +51,15 @@ def dfs(coinNow, cnt):
                 minCnt = cnt+1
             else:
                 minCnt = min(cnt+1, minCnt)
-            return
+            continue
         elif dropping==2:
             #둘다 떨어짐
-            return
+            continue
         else:
-            dfs(newCoin, cnt+1)
-
-dfs(coins, 0)
+            if cnt+1==11:
+                break
+            newCoin.append(cnt+1)
+            coinNow.append(newCoin)
+    
 
 print(minCnt)
