@@ -23,8 +23,10 @@ n^8
 '''
 
 import sys
+
+input = sys.stdin.readline
 n,m = map(int, input().split())
-graph = [[] for _ in range(n)]
+graph = [list(map(int, input().split())) for _ in range(n)]
 rotate_table = {
     'one' : [['r'],['d'],['l'],['u']],
     'two' : [['r','l'],['u','d']],
@@ -36,7 +38,6 @@ minval = sys.maxsize
 ans = 0
 tv_list = []
 for i in range(n):
-    graph[i] = list(map(int, input().split()))
     for j in range(m):
         if graph[i][j] == 0:
             ans+=1
@@ -60,79 +61,84 @@ def light(row, col, type, idx):
             for nc in range(col+1, m):
                 if graph[row][nc] == 6:
                     break
-                if graph[row][nc]>=0:
+                if graph[row][nc]>0:
+                    continue
+                if graph[row][nc]==0:
                     minus+=1
                 graph[row][nc]-=1
         if 'l' in dir and col>0:
             for nc in range(0, col):
                 if graph[row][nc] == 6:
                     break
-                if graph[row][nc]>=0:
+                if graph[row][nc]>0:
+                    continue
+                if graph[row][nc]==0:
                     minus+=1
                 graph[row][nc] -= 1
         if 'u' in dir and row>0:
             for nr in range(0, row):
                 if graph[nr][col] == 6:
                     break
-                if graph[nr][col]>=0:
+                if graph[nr][col]>0:
+                    continue
+                if graph[nr][col]==0:
                     minus+=1
                 graph[nr][col] -= 1
         if 'd' in dir and row+1<n:
             for nr in range(row+1, n):
                 if graph[nr][col] == 6:
                     break
-                if graph[nr][col]>=0:
+                if graph[nr][col]>0:
+                    continue
+                if graph[nr][col]==0:
                     minus+=1
                 graph[nr][col] -= 1
     return minus
 
 def delight(row, col, type, idx):
-    plus = 0
     for dir in rotate_table[type][idx]:
         if 'r' in dir and col+1<m:
             for nc in range(col+1, m):
                 if graph[row][nc] == 6:
                     break
+                if graph[row][nc]>0:
+                    continue
                 graph[row][nc] += 1
-                if graph[row][nc]==0:
-                    plus+=1
         if 'l' in dir and col>0:
             for nc in range(0, col):
                 if graph[row][nc] == 6:
                     break
+                if graph[row][nc]>0:
+                    continue
                 graph[row][nc] += 1
-                if graph[row][nc]==0:
-                    plus+=1
         if 'u' in dir and row>0:
             for nr in range(0, row):
                 if graph[nr][col] == 6:
                     break
+                if graph[nr][col]>0:
+                    continue
                 graph[nr][col] += 1
-                if graph[nr][col]==0:
-                    plus+=1
         if 'd' in dir and row+1<n:
             for nr in range(row+1, n):
                 if graph[nr][col] == 6:
                     break
+                if graph[nr][col]>0:
+                    continue
                 graph[nr][col] += 1
-                if graph[nr][col]==0:
-                    plus+=1
-    return plus
 
-def dfs(idx):
-    global minval, ans
+def dfs(idx, now):
+    global minval
     if idx==len(tv_list):
-        minval = min(ans, minval)
-        # onelist = sum(graph, [])
-        # minval = min(onelist.count(0), minval)
+        minval = min(now, minval)
         return
 
-    for row, col, type in tv_list[idx:]:
-        typelen = len(rotate_table[type])
-        for i in range(typelen):
-            ans -= light(row, col, type, i)
-            dfs(idx+1)
-            ans += delight(row, col, type, i)
+    row, col, type = tv_list[idx]
+    typelen = len(rotate_table[type])
+    for i in range(typelen):
+        temp = now
+        temp -= light(row, col, type, i)
+        dfs(idx+1, temp)
+        delight(row, col, type, i)
 
-dfs(0)
+dfs(0, ans)
 print(minval)
