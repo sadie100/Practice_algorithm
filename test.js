@@ -1,8 +1,8 @@
 const fs = require('fs');
 const [info, ...rest] = fs.readFileSync("input.txt").toString().trim().split("\n");
 
-const [gr, gc] = info.split(" ").map(d=>+d);
-const graph = rest.map(d=>d.split(" ").map(e=>+e));
+const [gr, gc] = info.split(" ").map(Number);
+const graph = rest.map(d=>d.split(" ").map(Number));
 const visited = Array.from(new Array(gr), ()=>Array(gc).fill(false));
 let maximum = 0;
 let count = 0;
@@ -30,12 +30,13 @@ const dfs = (row, col, cnt) => {
     }
 }
 
-for(let i=0;i<gr;i++){
+for(let i = 0; i < gr; i++) {
     for(let j=0;j<gc;j++){
         if(!visited[i][j] && graph[i][j]){
             dfs(i,j,1);
             count+=1;
         }
+        
     }
 }
 
