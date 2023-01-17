@@ -13,7 +13,7 @@ dfs bfs
 
 5. 왜 4라고 생각했는가?
 '''
-import sys, sys
+import sys
 sys.setrecursionlimit(10**5)
 
 input = sys.stdin.readline
@@ -26,22 +26,26 @@ for _ in range(n-1):
     graph[a].append(b)
     graph[b].append(a)
 
-def dfs(node, count):
-    global cnt
+stack = []
+
+for root in graph[1]:
+    visited[1] = True
+    stack.append((root, 1))
+
+while(stack):
+    node, count = stack.pop()
     if visited[node]:
-        return
+        continue
 
     visited[node] = True
     flag = False
     for next in graph[node]:
         if not visited[next]:
             flag = True
-            dfs(next, count+1)
+            stack.append((next, count+1))
     if not flag:
         cnt+=count
-        return
 
-dfs(1,0)
 
 if cnt%2==0:
     print("No")
