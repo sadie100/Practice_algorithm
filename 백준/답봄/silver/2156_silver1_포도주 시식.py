@@ -18,32 +18,20 @@ n번째까지의 최댓값을 구할 때 n번째 잔 전까지의 값을 활용�
 
 '''
 import sys
-sys.setrecursionlimit(10**7)
 input = sys.stdin.readline
 
 n = int(input())
-wines = []
-maximum = 0
 
-for _ in range(n):
-    wines.append(int(input()))
-dp = [0] * n
-dp[0] = (wines[0],1)
-dp[1] = (wines[1],1)
+wines = [0] + [int(input()) for _ in range(n)] + [0]
+dp = [0] * (n+2)
+dp[1] = wines[1]
+dp[2] = dp[1] + wines[2]
 
 if n<3:
-    print(max(dp[0],dp[1]))
+    print(dp[n])
     exit()
 
-for i in range(2,n):
-    if dp[i-1][1] == 2:
-        dp[i] = (dp[i-2][0]+wines[i],1)
-    else:
-        bigger = max(dp[i-1][0], dp[i-2][0])
-        if bigger == dp[i-1][0]:
-            dp[i] = (dp[i-1][0]+wines[i], dp[i-1][1]+1)
-        else:
-            dp[i] = (dp[i-2][0]+wines[i], 1)
+for i in range(3,n+1):
+    dp[i] = max(dp[i-3]+wines[i-1]+wines[i], dp[i-2]+wines[i],dp[i-1])
 
-
-print(dp)
+print(dp[n])
