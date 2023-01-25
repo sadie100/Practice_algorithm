@@ -1,22 +1,22 @@
 import sys, heapq
 input = sys.stdin.readline
 
-inf = sys.maxsize
+inf = 100_000_000
 v, e = map(int, input().split())
 graph = [[] for _ in range(v+1)]
-distance = [inf for _ in range(v+1)]
-start = int(input())
+distance = [inf]*(v+1)
+start = int(input().strip())
 
 for _ in range(e):
     u,v,w = map(int, input().split())
     graph[u].append((v,w))
 
 q = []
-heapq.heappush(q,(start, 0))
+heapq.heappush(q,(0,start))
 distance[start] = 0
 
 while(q):
-    n, dist = heapq.heappop(q)
+    dist, n = heapq.heappop(q)
 
     if distance[n] < dist:
         continue
@@ -27,11 +27,11 @@ while(q):
             continue
 
         distance[v] = cost
-        heapq.heappush(q,(v,cost))
+        heapq.heappush(q,(cost, v))
     
     
-for i in range(1,v+2):
-    if distance[i] == inf:
+for i in distance[1:]:
+    if i == inf:
         print('INF')
     else:
-        print(distance[i])
+        print(i)
