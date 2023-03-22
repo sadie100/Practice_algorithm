@@ -20,7 +20,7 @@ function solution(cap, n, deliveries, pickups) {
 
   let walk = 0;
   let now = 0;
-  while (toDeliver.length > 0 && toPickup.length > 0) {
+  while (toDeliver.length > 0 || toPickup.length > 0) {
     let box = cap;
     let empty = 0;
     //배송
