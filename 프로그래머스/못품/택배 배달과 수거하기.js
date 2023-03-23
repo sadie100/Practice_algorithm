@@ -40,7 +40,7 @@ function solution(cap, n, deliveries, pickups) {
     }
     //수거
     box = 0;
-    while (empty < cap && toPickup.length > 0) {
+    while (empty + box < cap && toPickup.length > 0) {
       const left = cap - empty;
       const [idx, pic] = toPickup.pop();
       if (pic > left) {
