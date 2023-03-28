@@ -8,6 +8,15 @@ def merging(table, r1, c1, r2, c2):
         merging(table, r, c, r2, c2)
         merging(table, r2, c2, r, c)
 
+def unmerging(table, r, c, notR, notC):
+    if not table[r][c][1] : return
+    removinglist = table[r][c][1]
+    if(r!=notR and c!=notC): table[r][c][0] = ''
+    table[r][c][1] = []
+    
+    for r1, c1 in removinglist:
+        unmerging(table, r1, c1, notR, notC)
+    
 
 def solution(commands):
     answer = []
@@ -16,7 +25,6 @@ def solution(commands):
     table = [[['', []] for _ in range(size)] for _ in range(size)]
     
     for com in commands:
-        print(table)
         coms = com.split()
         if com.find('UPDATE')!=-1:
             if coms[1].isnumeric():
@@ -37,16 +45,13 @@ def solution(commands):
                             table[i][j][0] = val2
         elif com.find('UNMERGE')!=-1:
             # UNMERGE 처리
-            print('UNMERGE')
-            
             command, r, c = coms
             r = int(r)
             c = int(c)
             if len(table[r][c][1])>0:
-                
                 for r1, c1 in table[r][c][1]:
-                    table[r][c][0] =''
-                    table[r][c][1] = []
+                    table[r1][c1][0] =''
+                    table[r1][c1][1] = []
                 table[r][c][1] = []
         elif com.find('MERGE')!=-1:
             command, *rest = coms
@@ -77,5 +82,4 @@ def solution(commands):
                 answer.append(table[r][c][0])
             else:
                 answer.append("EMPTY")
-    
     return answer
