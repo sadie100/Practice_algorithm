@@ -4,6 +4,7 @@ def merging(table, r1, c1, r2, c2):
         if r==r2 and c==c2: continue
         if [r2, c2] in table[r][c][1]:continue
         table[r][c][1].append([r2,c2])
+        table[r2][c2][1].append([r,c])
         merging(table, r, c, r2, c2)
         merging(table, r2, c2, r, c)
 
