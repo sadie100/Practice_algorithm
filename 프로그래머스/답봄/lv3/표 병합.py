@@ -6,7 +6,7 @@ def solution(commands):
     for com in commands:
         coms = com.split()
         if com.find('UPDATE')!=-1:
-            if coms[1].isnumeric():
+            if len(coms)==4:
                 # 첫 번째 경우
                 command, r, c, val = coms
                 r = int(r)
