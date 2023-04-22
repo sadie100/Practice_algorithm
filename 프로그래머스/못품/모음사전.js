@@ -1,22 +1,21 @@
 function solution(word) {
-  var answer = 0;
-  let nword = "";
-
-  const dictionary = ["A", "E", "I", "O", "U"];
-
-  const dfs = (nword) => {
-    if (nword.length === 5) {
-      nword = nword.slice(0, -1);
-      dfs(nword.slice(0, -1));
+  const dictionary = [];
+  const alpha = ["A", "E", "I", "O", "U"];
+  const dfs = (str) => {
+    dictionary.push(str);
+    if (str.length === 5) {
       return;
     }
 
-    const lastword = nword[nword.length - 1];
-    const next = dictionary.indexOf(lastword) + 1;
-    if (next > 4) {
-      dfs(nword.concat("A"));
+    for (let i = 0; i < 5; i++) {
+      dfs(str + alpha[i]);
     }
   };
 
-  return answer;
+  for (let i = 0; i < 5; i++) {
+    dfs(alpha[i]);
+  }
+
+  dictionary.sort();
+  return dictionary.indexOf(word) + 1;
 }
