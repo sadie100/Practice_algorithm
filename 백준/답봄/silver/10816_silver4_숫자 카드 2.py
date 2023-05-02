@@ -4,15 +4,13 @@ input = stdin.readline
 def getNumber(start, end, num):
     global cards, answer, dp
     if num in dp:
-        answer += ' ' + dp[num]
         return
     if start>end:
-        answer += ' 0'
+        dp[num] = '0'
         return
     half = (start + end)//2
     if num==cards[half]:
         counted = str(cards[start:end+1].count(num))
-        answer += ' ' + counted
         dp[num] = counted
         return
     elif num>cards[half]:
@@ -29,8 +27,8 @@ dp = {}
 cards.sort()
 answer = ''
 
-for quiz in quizes:
-    if quiz in dp: continue
-    getNumber(0, len(cards)-1, quiz)
+for card in cards:
+    if card in dp: continue
+    getNumber(0, len(cards)-1, card)
 
-print(answer.strip())
+print(' '.join(str(dp[quiz]) if quiz in dp else '0' for quiz in quizes))
