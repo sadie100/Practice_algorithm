@@ -12,9 +12,10 @@ function solution(targets) {
       now = start;
       continue;
     }
-    if (now < start) {
+    if (now >= end) {
       answer += 1;
-    } else {
+      now = start;
+    } else if (start > now) {
       now = start;
     }
   }
