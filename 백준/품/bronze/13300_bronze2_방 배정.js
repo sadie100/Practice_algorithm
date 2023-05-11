@@ -1,7 +1,7 @@
 //13300 방 배정
 const fs = require("fs");
 const [first, ...students] = fs
-  .readFileSync("input.txt")
+  .readFileSync("/dev/stdin")
   .toString()
   .trim()
   .split("\n");
