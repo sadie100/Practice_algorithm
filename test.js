@@ -6,5 +6,10 @@ const [n, ...numbers] = fs
   .split("\n")
   .map(Number);
 
-console.log(n);
-console.log(numbers);
+numbers.reverse();
+const proto = [];
+let answer = "";
+
+for (let i = 1; i <= n; i++) {
+  proto.push(i);
+}
