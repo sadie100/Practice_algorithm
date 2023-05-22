@@ -1,22 +1,27 @@
+//3015 오아시스 재결합
+
 const fs = require("fs");
-const input = fs.readFileSync("input.txt").toString().trim().split("\n");
-const N = input[0];
-const seq = input[1].split(" ").map(Number);
+const [N, ...heights] = fs
+  .readFileSync("input.txt")
+  .toString()
+  .trim()
+  .split("\n")
+  .map(Number);
 
+let ans = 0;
 const stack = [];
-const answer = new Array(N).fill(0);
-
-for (let j = 0; j < N; j++) {
-  let num = seq[j];
-  while (stack.length > 0 && num > stack[stack.length - 1][1]) {
-    const [index, val] = stack.pop();
-    answer[index] = num;
+for (let height of heights) {
+  while (stack.length > 0 && stack[stack.length - 1] < height) {
+    stack.pop();
   }
-  stack.push([j, num]);
-}
-while (stack.length > 0) {
-  const [index, val] = stack.pop();
-  answer[index] = -1;
+  ans += stack.length;
+  stack.push(height);
 }
 
-console.log(answer.join(" "));
+console.log(ans);
+// 3 2 3 5
+5;
+// 3 2 1
+// 8 5 4
+
+// 6 3 8
