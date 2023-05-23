@@ -9,23 +9,25 @@ const [N, ...heights] = fs
 
 let ans = 0;
 const stack = [];
-let dup = 1;
-let last = -1;
 for (let height of heights) {
-  if (stack.length > 0 && last === height) {
-    dup += 1;
-  } else {
-    dup = 1;
+  let flag =
+    stack.length > 0 && stack[stack.length - 1][0] === height ? true : false;
+  while (stack.length > 0 && stack[stack.length - 1][0] < height) {
+    const [popped, cnt] = stack.pop();
+    ans += cnt;
+    // console.log("height", height, "pop. ans", ans);
   }
-  while (stack.length > 0 && stack[stack.length - 1] < height) {
-    stack.pop();
-    ans += 1;
-  }
+
   if (stack.length > 0) {
-    ans += Math.min(stack.length, dup);
+    ans += 1;
+    // console.log("plus", stack[stack.length - 1][1]);
+    // console.log("height", height, "ans", ans);
   }
-  stack.push(height);
-  last = stack[stack.length - 1];
+  if (flag) {
+    // console.log("duplicate", height);
+    stack[stack.length - 1][1] += 1;
+  }
+  stack.push([height, 1]);
 }
 
 console.log(ans);
