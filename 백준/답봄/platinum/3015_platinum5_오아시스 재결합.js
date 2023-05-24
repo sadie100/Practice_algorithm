@@ -30,12 +30,3 @@ for (let height of heights) {
 }
 
 console.log(ans);
-/*
-2 0 
-4 1
-1 2
-2 4
-2 6
-5 9
-1 10
-*/
