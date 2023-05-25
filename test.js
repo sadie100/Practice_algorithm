@@ -1,41 +1,26 @@
-//3015 오아시스 재결합
+//6549 히스토그램에서 가장 큰 직사각형
+
 const fs = require("fs");
-const [N, ...heights] = fs
-  .readFileSync("input.txt")
-  .toString()
-  .trim()
-  .split("\n")
-  .map(Number);
+const cases = fs.readFileSync("input.txt").toString().trim().split("\n");
 
-let ans = 0;
-const stack = [];
-for (let height of heights) {
-  let count = 1;
-  while (stack.length > 0) {
-    if (stack[stack.length - 1][0] > height) {
-      break;
-    }
-    if (stack[stack.length - 1][0] === height) {
-      count = stack[stack.length - 1][1] + 1;
+cases.map((test) => {
+  if (test.trim() === "0") {
+    return;
+  }
+  const [n, ...heights] = test.split(" ").map(Number);
+  let val = 0;
+  let hNow = 0;
+  let width = 0;
+  for (let height of heights) {
+    hNow = hNow !== 0 ? Math.min(hNow, height) : height;
+    if (height < hNow) {
+      //새로 들어온 높이가 줄어듦
+      val = Math.max(hNow * width, val);
+      hNow = height;
+      width += 1;
     } else {
-      count = 1;
+      width += 1;
     }
-    const [popped, cnt] = stack.pop();
-    ans += cnt;
   }
-  if (stack.length > 0) {
-    ans += 1;
-  }
-  stack.push([height, count]);
-}
-
-console.log(ans);
-/*
-2 0 
-4 1
-1 2
-2 4
-2 6
-5 9
-1 10
-*/
+  console.log(val);
+});
