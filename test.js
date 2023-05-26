@@ -7,20 +7,32 @@ cases.map((test) => {
   if (test.trim() === "0") {
     return;
   }
+  let maxi = 0;
+  const stack = [];
   const [n, ...heights] = test.split(" ").map(Number);
-  let val = 0;
-  let hNow = 0;
-  let width = 0;
-  for (let height of heights) {
-    hNow = hNow !== 0 ? Math.min(hNow, height) : height;
-    if (height < hNow) {
-      //새로 들어온 높이가 줄어듦
-      val = Math.max(hNow * width, val);
-      hNow = height;
-      width += 1;
+  for (let i = 0; i < n; i++) {
+    let height = heights[i];
+    if (stack.length === 0 || heights[stack[stack.length - 1]] <= height) {
+      stack.push(i);
     } else {
-      width += 1;
+      while (stack.length > 0 && heights[stack[stack.length - 1]] > height) {
+        let poppedIdx = stack.pop();
+        if (stack.length === 0) {
+          maxi = Math.max(i * heights[poppedIdx], maxi);
+        } else {
+          maxi = Math.max((i - poppedIdx) * heights[poppedIdx], maxi);
+        }
+      }
+      stack.push(i);
     }
   }
-  console.log(val);
+  while (stack.length > 0) {
+    const poppedIdx = stack.pop();
+    if (stack.length === 0) {
+      maxi = Math.max(n * heights[poppedIdx], maxi);
+    } else {
+      maxi = Math.max((n - poppedIdx) * heights[poppedIdx], maxi);
+    }
+  }
+  console.log(maxi);
 });
