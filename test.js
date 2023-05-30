@@ -1,38 +1,82 @@
-//6549 히스토그램에서 가장 큰 직사각형
+//1021 회전하는 큐
 
 const fs = require("fs");
-const cases = fs.readFileSync("input.txt").toString().trim().split("\n");
+const [first, second] = fs
+  .readFileSync("input.txt")
+  .toString()
+  .trim()
+  .split("\n");
 
-cases.map((test) => {
-  if (test.trim() === "0") {
-    return;
+const [N, M] = first.split(" ").map(Number);
+const goals = second.split(" ").map(Number);
+const taskQueue = [[0, 0, ""]];
+const queue = Array.from(new Array(N), (v, k) => k + 1).reverse();
+let ans = Number.MAX_SAFE_INTEGER;
+
+// const operate = (goalIdx, cnt, before) => {
+//   const goal = goals[goalIdx];
+//   console.log(queue);
+//   if (queue.length > 0 && queue[queue.length - 1] === goal) {
+//     if (goalIdx === M - 1) {
+//       ans = Math.min(ans, cnt);
+//       return;
+//     }
+//     queue.pop();
+//     return taskQueue.push([goalIdx + 1, cnt, ""]);
+//     // return operate(goalIdx + 1, cnt, "");
+//   }
+//   if (queue.length > 0 && before !== "front") {
+//     const goingBack = queue.shift();
+//     queue.push(goingBack);
+//     taskQueue.push([goalIdx, cnt + 1, "back"]);
+//     // operate(goalIdx, cnt + 1, "back");
+//     queue.pop();
+//     queue.unshift(goingBack);
+//   }
+//   if (queue.length > 0 && before !== "back") {
+//     const goingFront = queue.pop();
+//     queue.unshift(goingFront);
+//     taskQueue.push([goalIdx, cnt + 1, "front"]);
+//     // operate(goalIdx, cnt + 1, "front");
+//     queue.shift();
+//     queue.push(goingFront);
+//   }
+// };
+
+while (true) {
+  if (taskQueue.length === 0) {
+    break;
   }
-  let maxi = 0;
-  const stack = [];
-  const [n, ...heights] = test.split(" ").map(Number);
-  for (let i = 0; i < n; i++) {
-    let height = heights[i];
-    if (stack.length === 0 || heights[stack[stack.length - 1]] <= height) {
-      stack.push(i);
-    } else {
-      while (stack.length > 0 && heights[stack[stack.length - 1]] > height) {
-        let poppedIdx = stack.pop();
-        if (stack.length === 0) {
-          maxi = Math.max(i * heights[poppedIdx], maxi);
-        } else {
-          maxi = Math.max((i - poppedIdx) * heights[poppedIdx], maxi);
-        }
-      }
-      stack.push(i);
+  console.log(taskQueue);
+  const [goalIdx, cnt, before] = taskQueue.shift();
+  const goal = goals[goalIdx];
+  console.log(queue);
+  if (queue.length > 0 && queue[queue.length - 1] === goal) {
+    if (goalIdx === M - 1) {
+      ans = Math.min(ans, cnt);
+      break;
     }
+    queue.pop();
+    taskQueue.push([goalIdx + 1, cnt, ""]);
+    break;
+    // return operate(goalIdx + 1, cnt, "");
   }
-  while (stack.length > 0) {
-    const poppedIdx = stack.pop();
-    if (stack.length === 0) {
-      maxi = Math.max(n * heights[poppedIdx], maxi);
-    } else {
-      maxi = Math.max((n - poppedIdx) * heights[poppedIdx], maxi);
-    }
+  if (queue.length > 0 && before !== "front") {
+    const goingBack = queue.shift();
+    queue.push(goingBack);
+    taskQueue.push([goalIdx, cnt + 1, "back"]);
+    // operate(goalIdx, cnt + 1, "back");
+    queue.pop();
+    queue.unshift(goingBack);
   }
-  console.log(maxi);
-});
+  if (queue.length > 0 && before !== "back") {
+    const goingFront = queue.pop();
+    queue.unshift(goingFront);
+    taskQueue.push([goalIdx, cnt + 1, "front"]);
+    // operate(goalIdx, cnt + 1, "front");
+    queue.shift();
+    queue.push(goingFront);
+  }
+}
+// operate(0, 0, "");
+console.log(ans);
