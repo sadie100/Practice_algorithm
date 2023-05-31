@@ -9,8 +9,13 @@ const [first, second] = fs
 
 const [N, M] = first.split(" ").map(Number);
 const goals = second.split(" ").map(Number);
-const taskQueue = [[0, 0, ""]];
-const queue = Array.from(new Array(N), (v, k) => k + 1).reverse();
+const queue = Array.from(new Array(N), (v, k) => k + 1);
+const defaultVisited = queue.reduce((acc, cur) => {
+  acc[cur] = false;
+  return acc;
+}, {});
+
+const taskQueue = [[0, 0, "", defaultVisited, 0]];
 let ans = Number.MAX_SAFE_INTEGER;
 
 // const operate = (goalIdx, cnt, before) => {
@@ -43,40 +48,82 @@ let ans = Number.MAX_SAFE_INTEGER;
 //   }
 // };
 
+const moveCursor = (cursor, plus, visited) => {
+  let nextCursor = plus ? cursor + 1 : cursor - 1;
+  if (plus === true) {
+    while (true) {
+      if (visited[nextCursor]) {
+        nextCursor += 1;
+        continue;
+      }
+      if (nextCursor === N) {
+        nextCursor = 0;
+        continue;
+      }
+      break;
+    }
+  } else {
+    while (true) {
+      if (visited[nextCursor]) {
+        nextCursor -= 1;
+        continue;
+      }
+      if (nextCursor === -1) {
+        nextCursor = N - 1;
+        continue;
+      }
+      break;
+    }
+  }
+  return nextCursor;
+};
+
 while (true) {
+  // console.log(taskQueue);
   if (taskQueue.length === 0) {
     break;
   }
-  console.log(taskQueue);
-  const [goalIdx, cnt, before] = taskQueue.shift();
+  const [goalIdx, cnt, before, visited, cursor] = taskQueue.shift();
+  // console.log(goalIdx, cnt, before, cursor);
   const goal = goals[goalIdx];
-  console.log(queue);
-  if (queue.length > 0 && queue[queue.length - 1] === goal) {
+  if (queue[cursor] === goal) {
+    visited[queue[cursor]] = true;
     if (goalIdx === M - 1) {
       ans = Math.min(ans, cnt);
-      break;
+      console.log(ans);
+      return;
     }
-    queue.pop();
-    taskQueue.push([goalIdx + 1, cnt, ""]);
-    break;
-    // return operate(goalIdx + 1, cnt, "");
+    taskQueue.push([
+      goalIdx + 1,
+      cnt,
+      "",
+      { ...visited },
+      moveCursor(cursor, true, visited),
+    ]);
+    continue;
   }
-  if (queue.length > 0 && before !== "front") {
-    const goingBack = queue.shift();
-    queue.push(goingBack);
-    taskQueue.push([goalIdx, cnt + 1, "back"]);
-    // operate(goalIdx, cnt + 1, "back");
-    queue.pop();
-    queue.unshift(goingBack);
+  // if (visited[queue[cursor]]) {
+  //   taskQueue.push([goalIdx, cnt, "", visited, moveCursor(cursor, true)]);
+  //   continue;
+  // }
+  if (before !== "front") {
+    taskQueue.push([
+      goalIdx,
+      cnt + 1,
+      "back",
+      { ...visited },
+      moveCursor(cursor, true, visited),
+    ]);
   }
-  if (queue.length > 0 && before !== "back") {
-    const goingFront = queue.pop();
-    queue.unshift(goingFront);
-    taskQueue.push([goalIdx, cnt + 1, "front"]);
-    // operate(goalIdx, cnt + 1, "front");
-    queue.shift();
-    queue.push(goingFront);
+  if (before !== "back") {
+    taskQueue.push([
+      goalIdx,
+      cnt + 1,
+      "back",
+      { ...visited },
+      moveCursor(cursor, false, visited),
+    ]);
   }
 }
 // operate(0, 0, "");
-console.log(ans);
+// console.log(ans);
