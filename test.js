@@ -18,25 +18,34 @@ visited[0] = 1;
 memo[1] = scores[0] + scores[1];
 visited[1] = 2;
 
-for (let i = 2; i < stair; i++) {
-  if (visited[i - 2] === 2 && visited[i - 1] === 2) {
-    break;
-  }
-  if (visited[i - 2] === 2) {
-    memo[i] = memo[i - 1] + scores[i];
-    visited[i] = visited[i - 1] + 1;
-  } else if (visited[i - 1] === 2) {
-    memo[i] = memo[i - 2] + scores[i];
-    visited[i] = 1;
-  } else {
-    if (memo[i - 2] > memo[i - 1]) {
-      memo[i] = memo[i - 2] + scores[i];
-      visited[i] = 1;
+const queue = [];
+queue.push([[...memo], [...visited], 1]);
+while (queue.length > 0) {
+  const [newMemo, newVisited, nowIdx] = queue.pop();
+
+  for (let i = nowIdx + 1; i < stair; i++) {
+    if (newVisited[i - 2] === 2 && newVisited[i - 1] === 2) {
+      break;
+    }
+    if (newVisited[i - 2] === 2) {
+      newMemo[i] = newMemo[i - 1] + scores[i];
+      newVisited[i] = newVisited[i - 1] + 1;
+    } else if (newVisited[i - 1] === 2) {
+      newMemo[i] = newMemo[i - 2] + scores[i];
+      newVisited[i] = 1;
     } else {
-      memo[i] = memo[i - 1] + scores[i];
-      visited[i] = visited[i - 1] + 1;
+      newMemo[i] = newMemo[i - 2] + scores[i];
+      newVisited[i] = 1;
+      const addMemo = [...newMemo];
+      const addVisited = [...newVisited];
+      addMemo[i] = newMemo[i - 1] + scores[i];
+      addVisited[i] = newVisited[i - 1] + 1;
+      queue.push([[...addMemo], [...addVisited], i]);
+    }
+    if (i === stair - 1) {
+      ans = Math.max(ans, newMemo[stair - 1]);
     }
   }
 }
 
-console.log(memo[stair - 1]);
+console.log(ans);
