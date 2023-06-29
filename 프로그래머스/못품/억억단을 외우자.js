@@ -1,79 +1,29 @@
 function solution(e, starts) {
   var answer = [];
   const newStarts = starts.map((st, id) => [st, id]);
-  newStarts.sort((a, b) => a[0] - b[0]);
-  const sqrt = Math.ceil(Math.sqrt(e));
-  const table = {};
-  for (let i = 1; i <= e; i++) {
-    for (let j = 1; j <= i; j++) {
-      if (i * j > e) break;
+  newStarts.sort((a, b) => b[0] - a[0]);
+  const answers = starts.map((d) => 0);
+  console.log(newStarts);
+  // const sqrt = Math.ceil(Math.sqrt(e));
+  // const table = {};
+  let idx = 0;
+  for (let i = e; i >= 1; i--) {
+    for (let j = Math.floor(e / i); j >= 1; j--) {
+      console.log("i", i, "j", j);
+      // if (i * j > e) break;
       let increase = 1;
       if (i !== j) increase = 2;
-      if (table[j * i]) {
-        table[j * i] += increase;
-      } else {
-        table[j * i] = increase;
+      while (j * i < newStarts[idx][0]) {
+        const oldIdx = newStarts[idx][1];
+        idx += 1;
+        const newIdx = newStarts[idx][1];
+        console.log(oldIdx, newIdx);
+        answers[newIdx] = answers[oldIdx];
       }
+      const newIdx = newStarts[idx][1];
+      answers[newIdx] += increase;
     }
   }
 
-  const sortedTable = Object.entries(table).map(([key, val]) => {
-    return [val, Number(key)];
-  });
-
-  sortedTable.sort((a, b) => {
-    return b[0] !== a[0] ? b[0] - a[0] : a[1] - b[1];
-  });
-
-  starts.map((start) => {
-    for (let [count, num] of sortedTable) {
-      if (start <= num) {
-        answer.push(num);
-        break;
-      }
-    }
-  });
-  return answer;
+  return answers;
 }
-
-/**
- * 
-function solution(e, starts) {
-  var answer = starts.map(()=>0);
-  const newStarts = starts.map((st, id) => [st,id])
-  newStarts.sort((a,b) => a[0]-b[0])
-  const sqrt = Math.ceil(Math.sqrt(e))
-  const table = {}
-  for(let i=1;i<=e;i++) {
-    for(let j=1;j<=i;j++){
-      if(i*j>e) break
-          let increase = 1
-          if(i!==j) increase = 2
-          if(table[j*i]){
-            table[j*i] += increase
-          }else{
-            table[j*i] = increase
-          }
-        }
-  }
-  
-  const sortedTable = Object.entries(table).map(([key, val]) => {
-    return [val, Number(key)]        
-  })
-  
-  sortedTable.sort((a,b) => {
-    return b[0]!==a[0] ? b[0]-a[0] : a[1]-b[1]
-  })
-  let i=0;
-  console.log(sortedTable)
-  for(let [count, num] of sortedTable){
-    if(i>=starts.length) break
-    while(i<starts.length && newStarts[i][0]<=num){
-      let idx = newStarts[i][1]
-      answer[idx] = num
-      i+=1
-      }
-  }
-  return answer;
-}
-      */
